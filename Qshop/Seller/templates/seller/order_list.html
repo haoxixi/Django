@@ -1,0 +1,81 @@
+{% extends "seller/base.html" %}
+
+{% block title %}
+    订单详情页
+{% endblock %}
+
+{% block label %}
+    订单详情
+
+{% endblock %}
+
+{% block content %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>商品信息</th>
+                <th>买家信息</th>
+                <th>收货地址</th>
+                <th>商品数量</th>
+                <th>商品价格</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in order_list%}
+            <tr>
+                <td>{{ order.goods_name }}</td>
+                <td>{{ order.goods_store.username }}</td>
+                <td>北京</td>
+                <td>{{ order.goods_count }}</td>
+                <td>{{ order.goods_price }}</td>
+{#                <td>{{ order.goods_safe_date }}</td>#}
+                <td>
+                    <a class="btn btn-primary" type="button">确认发货</a>
+
+                        <a href="/" class="btn btn-warning" type="button">修改收货地址</a>
+
+                        <a href="/" class="btn btn-warning" type="button">拒绝发货</a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+    <ul style="float: right; margin-right: 100px;" class="pagination">
+        {% for p in all_goods.page_range %}
+            <li class="paginate_button page-item previous">
+                {% ifequal status '1'%}
+                    <a class="page-link" href="/goods_list/{{ p }}/1/">{{ p }}</a>
+                {% else %}
+                    <a class="page-link" href="/goods_list/{{ p }}/0/">{{ p }}</a>
+                {% endifequal %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+
+<script>
+        function  add_cart(obj) {
+            var goods_id = obj.id;
+            var csrf_token = '{{ csrf_token }}';
+            var sendData = {
+                "goods_id":goods_id,
+                "csrfmiddlewaretoken":csrf_token
+            };
+            $.ajax(
+                {
+                    url:"/Buyer/add_cart/",
+                    type:"POST",
+                    data:sendData,
+                    success:function (data) {
+                        console.log(data)
+                    },
+                    errot:function (error) {
+                        console.log(error)
+                    }
+                }
+            )
+        }
